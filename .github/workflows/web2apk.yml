@@ -83,3 +83,19 @@ jobs:
         with:
           name: app-${{ github.event.inputs.tag }}
           path: webapp/android/app/build/outputs/apk/debug/*.apk
+          for dir in android/app/src/main/res/mipmap-*; do
+            cp icon.png "$dir/ic_launcher.png" 2>/dev/null || true
+            cp icon.png "$dir/ic_launcher_round.png" 2>/dev/null || true
+          done
+
+      - name: Build APK (debug/unsigned)
+        run: |
+          cd webapp/android
+          chmod +x ./gradlew
+          ./gradlew assembleDebug
+
+      - name: Upload APK sebagai artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-${{ github.event.inputs.tag }}
+          path: webapp/android/app/build/outputs/apk/debug/*.apk
